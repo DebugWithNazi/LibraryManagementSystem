@@ -1,0 +1,68 @@
+<h2 mat-dialog-title>Edit Book</h2>
+<div mat-dialog-content>
+  <form [formGroup]="editBookForm">
+    <div class="row">
+
+      <!-- Title -->
+      <div class="col-md-6 mb-3">
+        <label for="title" class="form-label">Title</label>
+        <input id="title" type="text" class="form-control" formControlName="title"
+          [class.is-invalid]="editBookForm.get('title')?.invalid && editBookForm.get('title')?.touched" />
+        <div class="invalid-feedback" *ngIf="editBookForm.get('title')?.invalid && editBookForm.get('title')?.touched">
+          Title is required.
+        </div>
+      </div>
+
+      <!-- Author -->
+      <div class="col-md-6 mb-3">
+        <label for="author" class="form-label">Author</label>
+        <input id="author" type="text" class="form-control" formControlName="author"
+          [class.is-invalid]="editBookForm.get('author')?.invalid && editBookForm.get('author')?.touched" />
+        <div class="invalid-feedback"
+          *ngIf="editBookForm.get('author')?.invalid && editBookForm.get('author')?.touched">
+          Author is required.
+        </div>
+      </div>
+
+      <!-- Edition -->
+      <div class="col-md-6 mb-3">
+        <label for="edition" class="form-label">Edition</label>
+        <input id="edition" type="text" class="form-control" formControlName="edition" />
+      </div>
+
+      <!-- Publisher -->
+      <div class="col-md-6 mb-3">
+        <label for="publisher" class="form-label">Publisher</label>
+        <input id="publisher" type="text" class="form-control" formControlName="publisher" />
+      </div>
+
+      <!-- Genre -->
+      <div class="col-md-6 mb-3">
+        <label for="genre" class="form-label">Genre</label>
+        <input id="genre" type="text" class="form-control" formControlName="genre" />
+      </div>
+
+      <!-- Page Count -->
+      <div class="col-md-6 mb-3">
+        <label for="pageCount" class="form-label">Page Count</label>
+        <input id="pageCount" type="number" class="form-control" formControlName="pageCount" />
+      </div>
+
+      <!-- Language -->
+      <div class="col-md-6 mb-3">
+        <label for="language" class="form-label">Language</label>
+        <input id="language" type="text" class="form-control" formControlName="language" />
+      </div>
+
+      <!-- Publication Year -->
+      <div class="col-md-6 mb-3">
+        <label for="publicationYear" class="form-label">Publication Year</label>
+        <input id="publicationYear" type="number" class="form-control" formControlName="publicationYear" />
+      </div>
+    </div>
+  </form>
+</div>
+<div mat-dialog-actions class="d-flex justify-content-end mt-3">
+  <button mat-button class="btn btn-secondary me-2" (click)="onCancel()">Cancel</button>
+  <button mat-button class="btn btn-primary" [disabled]="editBookForm.invalid" (click)="onSave()">Save</button>
+</div>

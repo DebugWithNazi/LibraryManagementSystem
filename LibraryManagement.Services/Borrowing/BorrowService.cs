@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace LibraryManagement.Services.Borrowing
 {
-    public class BorrowService: IBorrowService
+    public class BorrowService : IBorrowService
     {
         public readonly LibraryDbContext _context;
         public BorrowService(LibraryDbContext context)
@@ -55,6 +55,15 @@ namespace LibraryManagement.Services.Borrowing
         }
 
         public async Task<List<BorrowedBookDto>> GetBorrowedBooks(string userId)
+        {
+            var borrowedBooks = await _context.BorrowRecords
+                               .Where(b => b.UserId == userId && b.ReturnedAt == null)
+                               .OrderByDescending(x => x.BorrowedAt).Select(b => b.ToDto())
+                               .ToListAsync();
+            return borrowedBooks;
+        }
+
+        public async Task<List<BorrowedBookDto>> GetReturnedBooks(string userId)
         {
             var borrowedBooks = await _context.BorrowRecords
                                .Where(b => b.UserId == userId)

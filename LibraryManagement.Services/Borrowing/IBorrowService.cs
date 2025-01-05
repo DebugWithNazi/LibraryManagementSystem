@@ -13,5 +13,6 @@ namespace LibraryManagement.Services.Borrowing
         Task<AddedBorrowBookDto> BorrowBook(AddBorrowBookDto request, string userId);
         Task<bool> ReturnBook(string isbn, string userId);
         Task<List<BorrowedBookDto>> GetBorrowedBooks(string userId);
+        Task<List<BorrowedBookDto>> GetReturnedBooks(string userId);
     }
 }

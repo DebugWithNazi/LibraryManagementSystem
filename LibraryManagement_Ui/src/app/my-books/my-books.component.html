@@ -1,0 +1,37 @@
+<div class="books-list mt-4">
+    <div class="d-flex flex-column align-items-center mb-4">
+        <h1 class="h1 text-center">My Books</h1>
+    </div>
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <!-- ISBN Column -->
+        <ng-container matColumnDef="isbn">
+            <th mat-header-cell *matHeaderCellDef> ISBN </th>
+            <td mat-cell *matCellDef="let book"> {{ book.isbn }} </td>
+        </ng-container>
+
+        <!-- Borrowed At Column -->
+        <ng-container matColumnDef="borrowedAt">
+            <th mat-header-cell *matHeaderCellDef> Borrowed At </th>
+            <td mat-cell *matCellDef="let book"> {{ book.borrowedAt | date:'short' }} </td>
+        </ng-container>
+
+        <!-- Returned At Column -->
+        <ng-container matColumnDef="returnedAt">
+            <th mat-header-cell *matHeaderCellDef> Returned At </th>
+            <td mat-cell *matCellDef="let book">
+                {{ book.returnedAt ? (book.returnedAt | date:'short') : 'Not Returned' }}
+            </td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef> Actions </th>
+            <td mat-cell *matCellDef="let book">
+                <button class="btn btn-sm btn-primary" (click)="returnBook(book.isbn)">Return</button>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+</div>

@@ -1,0 +1,138 @@
+<div class="mt-4">
+  <h2>Add Books</h2>
+  <form [formGroup]="bookForm" (ngSubmit)="onSubmit()">
+    <table class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <th>ISBN</th>
+          <th>Title</th>
+          <th>Author</th>
+          <th>Edition</th>
+          <th>Publisher</th>
+          <th>Genre</th>
+          <th>Page Count</th>
+          <th>Language</th>
+          <th>Publication Year</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody formArrayName="books">
+        <tr *ngFor="let book of books.controls; let i = index" [formGroupName]="i">
+          <td>
+            <input
+              type="text"
+              formControlName="isbn"
+              class="form-control"
+              placeholder="ISBN"
+              [ngClass]="{ 'is-invalid': book.get('isbn')?.invalid && book.get('isbn')?.touched }"
+            />
+            <div
+              *ngIf="book.get('isbn')?.invalid && book.get('isbn')?.touched"
+              class="invalid-feedback"
+            >
+              ISBN is required
+            </div>
+          </td>
+          <td>
+            <input
+              type="text"
+              formControlName="title"
+              class="form-control"
+              placeholder="Title"
+              [ngClass]="{ 'is-invalid': book.get('title')?.invalid && book.get('title')?.touched }"
+            />
+            <div
+              *ngIf="book.get('title')?.invalid && book.get('title')?.touched"
+              class="invalid-feedback"
+            >
+              Title is required
+            </div>
+          </td>
+          <td>
+            <input
+              type="text"
+              formControlName="author"
+              class="form-control"
+              placeholder="Author"
+              [ngClass]="{ 'is-invalid': book.get('author')?.invalid && book.get('author')?.touched }"
+            />
+            <div
+              *ngIf="book.get('author')?.invalid && book.get('author')?.touched"
+              class="invalid-feedback"
+            >
+              Author is required
+            </div>
+          </td>
+          <td>
+            <input type="text" formControlName="edition" class="form-control" placeholder="Edition" />
+          </td>
+          <td>
+            <input type="text" formControlName="publisher" class="form-control" placeholder="Publisher" />
+          </td>
+          <td>
+            <input type="text" formControlName="genre" class="form-control" placeholder="Genre" />
+          </td>
+          <td>
+            <input
+              type="number"
+              formControlName="pageCount"
+              class="form-control"
+              placeholder="Page Count"
+              [ngClass]="{ 'is-invalid': book.get('pageCount')?.invalid && book.get('pageCount')?.touched }"
+            />
+            <div
+              *ngIf="book.get('pageCount')?.invalid && book.get('pageCount')?.touched"
+              class="invalid-feedback"
+            >
+              Page Count must be greater than 0
+            </div>
+          </td>
+          <td>
+            <input type="text" formControlName="language" class="form-control" placeholder="Language" />
+          </td>
+          <td>
+            <input
+              type="number"
+              formControlName="publicationYear"
+              class="form-control"
+              placeholder="Publication Year"
+              [ngClass]="{ 'is-invalid': book.get('publicationYear')?.invalid && book.get('publicationYear')?.touched }"
+            />
+            <div
+              *ngIf="book.get('publicationYear')?.invalid && book.get('publicationYear')?.touched"
+              class="invalid-feedback"
+            >
+              Publication Year must be a valid number
+            </div>
+          </td>
+          <td>
+            <button
+              type="button"
+              class="btn btn-danger"
+              (click)="removeBook(i)"
+            >
+              Remove
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="d-flex justify-content-between mt-3">
+      <button
+        type="button"
+        class="btn btn-secondary"
+        (click)="addBook()"
+      >
+        Add Another Book
+      </button>
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="bookForm.invalid"
+      >
+        Submit
+      </button>
+    </div>
+  </form>
+</div>

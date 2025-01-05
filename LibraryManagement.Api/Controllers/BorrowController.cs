@@ -54,5 +54,18 @@ namespace LibraryManagement.Api.Controllers
                 Books = borrowedBooks
             });
         }
+
+        [HttpGet("returned")]
+        [Authorize]
+        public async Task<IActionResult> GetReturnedBooks()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var borrowedBooks = await _borrowService.GetReturnedBooks(userId);
+
+            return Ok(new
+            {
+                Books = borrowedBooks
+            });
+        }
     }
 }
