@@ -1,6 +1,7 @@
 ﻿using LibraryManagement.Dtos.Requests;
 using LibraryManagement.Dtos.Responses;
 using LibraryManagement.Infrastructure.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -18,12 +19,15 @@ namespace LibraryManagement.Services.Users
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UserService(UserManager<ApplicationUser> userManager, IConfiguration configuration)
+        public UserService(IHttpContextAccessor httpContextAccessor, UserManager<ApplicationUser> userManager, IConfiguration configuration)
         {
             _userManager = userManager;
             _configuration = configuration;
+            _httpContextAccessor = httpContextAccessor;
         }
+       
         public async Task<(int StatusCode, string Message)> CreateUserAsync(RegisterDto dto)
         {
             if (dto.Username.IsPotentialSqlInjection())
@@ -66,7 +70,7 @@ namespace LibraryManagement.Services.Users
             var user = await _userManager.FindByNameAsync(dto.Username);
             if (user != null && await _userManager.CheckPasswordAsync(user, dto.Password))
             {
-                var sessionToken = GenerateJwtToken(user);
+                var sessionToken = await GenerateJwtToken(user);
 
                 return new LoggedingWithTokenDto
                 {
@@ -78,14 +82,31 @@ namespace LibraryManagement.Services.Users
             return null;
         }
 
-        private string GenerateJwtToken(ApplicationUser user)
+        public async Task<bool> IsCurrentUserAdminAsync()
         {
+            var user = await GetCurrentUserAsync();
+            if (user != null)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                return roles.Contains("Admin");
+            }
+            return false;
+        }
+
+        private async Task<string> GenerateJwtToken(ApplicationUser user)
+        {
+            var roles = await _userManager.GetRolesAsync(user);
+            bool isAdmin = roles.Contains("Admin");
+
             var claims = new[]
             {
-            new Claim(ClaimTypes.Name, user.UserName),
-            new Claim(ClaimTypes.NameIdentifier, user.Id),
-            new Claim(ClaimTypes.Email, user.Email)
-        };
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim("isAdmin", isAdmin.ToString()),
+                new Claim("username", user.UserName.ToString())
+                
+            };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -98,6 +119,16 @@ namespace LibraryManagement.Services.Users
                 signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        private async Task<ApplicationUser> GetCurrentUserAsync()
+        {
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId != null)
+            {
+                return await _userManager.FindByIdAsync(userId);
+            }
+            return null;
         }
     }
 }

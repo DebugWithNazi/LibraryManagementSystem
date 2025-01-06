@@ -10,13 +10,16 @@ import { BorrowingListComponent } from './borrowing-list/borrowing-list.componen
 
 const routes: Routes = [
   { path: 'books-list', component: ListBooksComponent },
+  { path: 'all-returned-books', component: BorrowingListComponent },
   { path: 'all-borrowed-books', component: BorrowingListComponent },
   { path: 'my-books', component: MyBooksComponent },
+  { path: 'all-issued-books', component: MyBooksComponent },
   { path: 'register', component: RegistrationComponent },
   { path: 'login', component: LoginComponent },
   { path: 'add', component: AddBookComponent },
-  { path: '', redirectTo: '/books-list', pathMatch: 'full' },
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
 ];
+
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { BorrowedBookDto } from '../Models';
 import { BorrowService } from 'src/services/borrow.service';
 import { ToastrService } from 'ngx-toastr';
+import { AuthService } from 'src/services/auth.service';
 
 @Component({
   selector: 'app-borrowing-list',
@@ -11,12 +12,17 @@ import { ToastrService } from 'ngx-toastr';
 export class BorrowingListComponent implements OnInit {
   dataSource: BorrowedBookDto[] = [];
   displayedColumns: string[] = ['isbn', 'borrowedAt', 'returnedAt', 'actions'];
-
+  title = 'All Borrowed Books';
   constructor(private borrowService: BorrowService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    public authService: AuthService
   ) { }
 
   ngOnInit(): void {
+    if (this.authService.isAdmin) {
+      this.title = 'All Returned Books';
+    }
+
     this.loadBorrowedBooks();
   }
 

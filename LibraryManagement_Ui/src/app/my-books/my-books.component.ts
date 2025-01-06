@@ -7,6 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { BorrowService } from 'src/services/borrow.service';
 import { ToastrService } from 'ngx-toastr';
+import { AuthService } from 'src/services/auth.service';
 
 @Component({
   selector: 'app-my-books',
@@ -16,12 +17,19 @@ import { ToastrService } from 'ngx-toastr';
 export class MyBooksComponent implements OnInit {
   dataSource: BorrowedBookDto[] = [];
   displayedColumns: string[] = ['isbn', 'borrowedAt', 'returnedAt', 'actions'];
+  title = 'My Books';
 
   constructor(private borrowService: BorrowService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    public authService: AuthService
+
   ) { }
 
   ngOnInit(): void {
+    if (this.authService.isAdmin) {
+      this.title = 'All Issued Books';
+    }
+
     this.loadBorrowedBooks();
   }
 

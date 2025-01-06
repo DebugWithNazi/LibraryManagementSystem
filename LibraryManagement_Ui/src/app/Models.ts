@@ -78,3 +78,9 @@ export interface BorrowedBookDto {
   borrowedAt: Date;
   returnedAt?: Date | null;
 }
+
+export interface JwtPayload {
+  isAdmin: string;
+  username: string;
+  [key: string]: any;
+}

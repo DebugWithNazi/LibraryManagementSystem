@@ -8,6 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { EditBookDialogComponent } from '../edit-book-dialog/edit-book-dialog.component';
 import { BorrowService } from 'src/services/borrow.service';
 import { ToastrService } from 'ngx-toastr';
+import { AuthService } from 'src/services/auth.service';
 
 @Component({
   selector: 'app-list-books',
@@ -25,7 +26,8 @@ export class ListBooksComponent implements OnInit {
   constructor(private bookService: BookService,
     private router: Router, private dialog: MatDialog,
     private borrowService: BorrowService,
-    private toastr: ToastrService) { }
+    private toastr: ToastrService,
+    public authService: AuthService) { }
 
   ngOnInit(): void {
     this.loadBooks();

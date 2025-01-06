@@ -1,7 +1,13 @@
 <div class="container mt-3">
-
-    <nav class="navbar navbar-expand-lg border-bottom shadow-sm">
+    <nav *ngIf="authService.isUserLogin" class="navbar navbar-expand-lg border-bottom shadow-sm">
         <div class="container">
+            <!-- Show logged-in username on the left -->
+            <div>
+                <span class="navbar-text">
+                    Welcome, <strong>{{ authService.userName }}</strong>
+                </span>
+            </div>
+
             <div class="mx-auto">
                 <ul class="navbar-nav">
                     <li class="nav-item">
@@ -10,31 +16,38 @@
                             Books List
                         </a>
                     </li>
-                    <li class="nav-item">
+
+                    <li *ngIf="!authService.isAdmin" class="nav-item">
                         <a class="nav-link" routerLink="/my-books" routerLinkActive="active"
                             [routerLinkActiveOptions]="{ exact: true }">
                             My Books
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" routerLink="/issued-books" routerLinkActive="active"
+
+                    <li *ngIf="authService.isAdmin" class="nav-item">
+                        <a class="nav-link" routerLink="/all-issued-books" routerLinkActive="active"
                             [routerLinkActiveOptions]="{ exact: true }">
                             Issued Books
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" routerLink="/returned-books" routerLinkActive="active"
+                    <li *ngIf="authService.isAdmin" class="nav-item">
+                        <a class="nav-link" routerLink="/all-returned-books" routerLinkActive="active"
                             [routerLinkActiveOptions]="{ exact: true }">
                             Returned Books
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li *ngIf="!authService.isAdmin" class="nav-item">
                         <a class="nav-link" routerLink="/all-borrowed-books" routerLinkActive="active"
                             [routerLinkActiveOptions]="{ exact: true }">
                             All Borrowed Books
                         </a>
                     </li>
                 </ul>
+            </div>
+
+            <!-- Logout Button -->
+            <div>
+                <button (click)="logout()" class="btn btn-danger">Logout</button>
             </div>
         </div>
     </nav>

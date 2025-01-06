@@ -12,5 +12,6 @@ namespace LibraryManagement.Services.Users
     {
         Task<(int StatusCode, string Message)> CreateUserAsync(RegisterDto dto);
         Task<LoggedingWithTokenDto> LoginAsync(LoginDto dto);
+        Task<bool> IsCurrentUserAdminAsync();
     }
 }

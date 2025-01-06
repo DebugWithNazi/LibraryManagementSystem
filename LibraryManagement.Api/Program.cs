@@ -8,6 +8,7 @@ using System.Text;
 using LibraryManagement.Services.Books;
 using LibraryManagement.Services.Borrowing;
 using LibraryManagement.Services.Users;
+using LibraryManagement.Api.Middleware;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -89,7 +90,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
 app.UseHttpsRedirection();
+
+app.UseMiddleware<CustomExceptionMiddleware>();
 
 app.UseCors();
 

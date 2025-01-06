@@ -1,7 +1,7 @@
 <div class="books-list mt-4">
   <div class="d-flex flex-column align-items-center mb-4">
     <h1 class="h1 text-center">Books List</h1>
-    <div class="d-flex justify-content-end w-100">
+    <div *ngIf="authService.isAdmin" class="d-flex justify-content-end w-100">
       <button class="btn btn-primary" (click)="addBook()">Add New Book</button>
     </div>
   </div>
@@ -35,8 +35,9 @@
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef> Actions </th>
       <td mat-cell *matCellDef="let book">
-        <button class="btn btn-sm btn-success" (click)="openEditDialog(book)">Edit</button>
-        <button class="btn btn-sm btn-primary ml-2" (click)="borrowBook(book)">Borrow</button>
+        <button *ngIf="authService.isAdmin" class="btn btn-sm btn-success" (click)="openEditDialog(book)">Edit</button>
+        <button *ngIf="!authService.isAdmin" class="btn btn-sm btn-primary ml-2"
+          (click)="borrowBook(book)">Borrow</button>
       </td>
     </ng-container>
 

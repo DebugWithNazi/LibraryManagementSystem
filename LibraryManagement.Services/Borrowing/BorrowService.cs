@@ -2,6 +2,8 @@
 using LibraryManagement.Dtos.Responses;
 using LibraryManagement.Infrastructure.Contexts;
 using LibraryManagement.Infrastructure.Entities;
+using LibraryManagement.Services.Users;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -14,9 +16,13 @@ namespace LibraryManagement.Services.Borrowing
     public class BorrowService : IBorrowService
     {
         public readonly LibraryDbContext _context;
-        public BorrowService(LibraryDbContext context)
+        private readonly IUserService _userService;
+
+        public BorrowService(IUserService userService, LibraryDbContext context)
         {
             _context = context;
+            _userService = userService;
+
         }
 
         public async Task<AddedBorrowBookDto> BorrowBook(AddBorrowBookDto request, string userId)
@@ -56,26 +62,52 @@ namespace LibraryManagement.Services.Borrowing
 
         public async Task<List<BorrowedBookDto>> GetBorrowedBooks(string userId)
         {
-            var borrowedBooks = await _context.BorrowRecords
+            bool isAdmin = await _userService.IsCurrentUserAdminAsync();
+            if (isAdmin)
+            {
+                return await _context.BorrowRecords
+                                   .Where(b => b.ReturnedAt == null)
+                                   .OrderByDescending(x => x.BorrowedAt).Select(b => b.ToDto())
+                                   .ToListAsync();
+            }
+            else
+            {
+                return await _context.BorrowRecords
                                .Where(b => b.UserId == userId && b.ReturnedAt == null)
                                .OrderByDescending(x => x.BorrowedAt).Select(b => b.ToDto())
                                .ToListAsync();
-            return borrowedBooks;
+            }
         }
 
         public async Task<List<BorrowedBookDto>> GetReturnedBooks(string userId)
         {
-            var borrowedBooks = await _context.BorrowRecords
+            bool isAdmin = await _userService.IsCurrentUserAdminAsync();
+            if (isAdmin)
+            {
+                return await _context.BorrowRecords
+                               .OrderByDescending(x => x.BorrowedAt).Select(b => b.ToDto())
+                               .ToListAsync();
+            }
+            else
+            {
+                return await _context.BorrowRecords
                                .Where(b => b.UserId == userId)
                                .OrderByDescending(x => x.BorrowedAt).Select(b => b.ToDto())
                                .ToListAsync();
-            return borrowedBooks;
+            }
         }
 
         public async Task<bool> ReturnBook(string isbn, string userId)
         {
-            var borrowRecord = await _context.BorrowRecords
-               .FirstOrDefaultAsync(b => b.ISBN == isbn && b.UserId == userId && b.ReturnedAt == null);
+            bool isAdmin = await _userService.IsCurrentUserAdminAsync();
+            BorrowRecord? borrowRecord;
+            if (isAdmin)
+            borrowRecord = await _context.BorrowRecords
+               .FirstOrDefaultAsync(b => b.ISBN == isbn && b.ReturnedAt == null);
+            else
+                borrowRecord = await _context.BorrowRecords
+                   .FirstOrDefaultAsync(b => b.ISBN == isbn && b.UserId == userId && b.ReturnedAt == null);
+
             if (borrowRecord == null)
             {
                 return false;

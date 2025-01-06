@@ -7,7 +7,6 @@ import { BorrowingListComponent } from './borrowing-list/borrowing-list.componen
 import { MyBooksComponent } from './my-books/my-books.component';
 import { RegistrationComponent } from './registration/registration.component';
 import { LoginComponent } from './login/login.component';
-import { IssuedBooksComponent } from './issued-books/issued-books.component';
 import { ReturnedBooksComponent } from './returned-books/returned-books.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
@@ -33,7 +32,6 @@ import { MatDialogModule } from '@angular/material/dialog';
     MyBooksComponent,
     RegistrationComponent,
     LoginComponent,
-    IssuedBooksComponent,
     ReturnedBooksComponent,
     EditBookComponent,
     EditBookDialogComponent
